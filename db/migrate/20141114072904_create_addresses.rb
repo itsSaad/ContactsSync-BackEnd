@@ -8,7 +8,7 @@ class CreateAddresses < ActiveRecord::Migration
       t.string :country
       t.string :country_code
 
-      t.integer :user_id
+      t.integer :contact_id
 
       t.timestamps
     end

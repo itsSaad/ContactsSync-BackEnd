@@ -4,7 +4,7 @@ class CreateSocialProfiles < ActiveRecord::Migration
       t.string :label
       t.string :username
       t.string :url
-      t.integer :user_id
+      t.integer :contact_id
 
       t.timestamps
     end

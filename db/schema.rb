@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141114085842) do
+ActiveRecord::Schema.define(version: 20141117100038) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,7 +38,7 @@ ActiveRecord::Schema.define(version: 20141114085842) do
     t.string   "zip"
     t.string   "country"
     t.string   "country_code"
-    t.integer  "user_id"
+    t.integer  "contact_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -69,42 +69,7 @@ ActiveRecord::Schema.define(version: 20141114085842) do
     t.datetime "updated_at"
   end
 
-  create_table "emails", force: true do |t|
-    t.string   "label"
-    t.string   "email"
-    t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "instant_messengers", force: true do |t|
-    t.string   "label"
-    t.string   "username"
-    t.string   "url"
-    t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "phones", force: true do |t|
-    t.string   "label"
-    t.string   "phone_number"
-    t.string   "ext"
-    t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "social_profiles", force: true do |t|
-    t.string   "label"
-    t.string   "username"
-    t.string   "url"
-    t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "users", force: true do |t|
+  create_table "contacts", force: true do |t|
     t.string   "first_name"
     t.string   "middle_name"
     t.string   "last_name"
@@ -119,6 +84,56 @@ ActiveRecord::Schema.define(version: 20141114085842) do
     t.datetime "creation_date"
     t.datetime "modification_date"
     t.string   "app_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "composite_name"
+    t.integer  "user_id"
+  end
+
+  add_index "contacts", ["user_id"], name: "index_contacts_on_user_id", using: :btree
+
+  create_table "emails", force: true do |t|
+    t.string   "label"
+    t.string   "email"
+    t.integer  "contact_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "instant_messengers", force: true do |t|
+    t.string   "label"
+    t.string   "username"
+    t.string   "url"
+    t.integer  "contact_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "phones", force: true do |t|
+    t.string   "label"
+    t.string   "ext"
+    t.integer  "contact_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "number"
+  end
+
+  create_table "social_profiles", force: true do |t|
+    t.string   "label"
+    t.string   "username"
+    t.string   "url"
+    t.integer  "contact_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "users", force: true do |t|
+    t.string   "first_name"
+    t.string   "middle_name"
+    t.string   "last_name"
+    t.text     "emails"
+    t.text     "phones"
+    t.string   "identifier"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

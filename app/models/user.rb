@@ -1,12 +1,14 @@
 class User < ActiveRecord::Base
 
-  has_many :phones
-  has_many :emails
-  has_many :addresses
-  has_many :instant_messengers
-  has_many :social_profiles
-
-  belongs_to :app
+  has_many :contacts
 
 
+  after_create :assert_user_identifier
+
+  def assert_user_identifier
+    if(!self.identifier)
+      self.identifier = SecureRandom.hex(32)
+      self.save
+    end
+  end
 end

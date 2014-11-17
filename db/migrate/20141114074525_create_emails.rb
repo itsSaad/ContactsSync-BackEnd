@@ -3,7 +3,7 @@ class CreateEmails < ActiveRecord::Migration
     create_table :emails do |t|
       t.string :label
       t.string :email
-      t.integer :user_id
+      t.integer :contact_id
 
       t.timestamps
     end
