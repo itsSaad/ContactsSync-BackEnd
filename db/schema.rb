@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141117100038) do
+ActiveRecord::Schema.define(version: 20141118095637) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,16 +88,19 @@ ActiveRecord::Schema.define(version: 20141117100038) do
     t.datetime "updated_at"
     t.string   "composite_name"
     t.integer  "user_id"
+    t.integer  "record_id"
   end
 
+  add_index "contacts", ["record_id"], name: "index_contacts_on_record_id", using: :btree
   add_index "contacts", ["user_id"], name: "index_contacts_on_user_id", using: :btree
 
   create_table "emails", force: true do |t|
     t.string   "label"
-    t.string   "email"
     t.integer  "contact_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "value"
+    t.integer  "identifier"
   end
 
   create_table "instant_messengers", force: true do |t|
@@ -115,7 +118,8 @@ ActiveRecord::Schema.define(version: 20141117100038) do
     t.integer  "contact_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "number"
+    t.string   "value"
+    t.integer  "identifier"
   end
 
   create_table "social_profiles", force: true do |t|
@@ -136,6 +140,7 @@ ActiveRecord::Schema.define(version: 20141117100038) do
     t.string   "identifier"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "last_sync"
   end
 
 end

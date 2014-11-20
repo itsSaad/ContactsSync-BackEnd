@@ -8,7 +8,6 @@ class Api::V1::ApiController < ApplicationController
   def check_app_api_key_presence
     app_key = params[:api_key]
     @app = App.find_by_api_key(app_key)
-    binding.pry
     if !@app
       render :json => {
         message: "Invalid API Key. Please provide valid key."

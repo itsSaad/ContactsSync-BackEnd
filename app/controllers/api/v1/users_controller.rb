@@ -21,20 +21,23 @@ class Api::V1::UsersController < Api::V1::ApiController
 
   def sync_contacts
     if(params[:user] && params[:user][:identifier])
-      user = User.find_by_identifer(params[:user][:identifier])
-      user.first_name = params[:user][:first_name]
-      user.last_name = params[:user][:last_name]
-    else
-      user = User.create(first_name: params[:user][:first_name], last_name: params[:last_name])
+      user = User.find_by_identifier(params[:user][:identifier])
+      #update the user profile if sent
+      if user
+        user.first_name = params[:user][:first_name]
+        user.last_name = params[:user][:last_name]
+      else
+        user = User.create(first_name: params[:user][:first_name], last_name: params[:user][:last_name])
+      end
     end
 
     if !user
       render :json => {
         message: "Unknown user identifier."
-      }, status: 402
+      }, status: 422
+      return
     end
     contacts = params[:contacts]
-    binding.pry
     contacts.each do |aContact|
       phones = aContact[:phones]
       emails = aContact[:emails]
@@ -43,25 +46,26 @@ class Api::V1::UsersController < Api::V1::ApiController
       aContact.delete :emails
 
       newContact = Contact.new(contact_params(aContact))
+
       if phones
         phones.each do |aPhone|
-          newContact.phones.build(:number => aPhone)
+          newContact.phones.build(phone_params(aPhone))
         end
       end
       if emails
         emails.each do |anEmail|
-          newContact.emails.build(:email => anEmail)
+          newContact.emails.build(email_params(anEmail))
         end
       end
       newContact.save
       user.contacts << newContact
     end
+    user.last_sync = DateTime.now
     user.save
 
     render :json => {
-      message: "#{user.contacts.count} contacts saved on server.",
+      message: "#{user.contacts.count} contacts saved on server. Next Time send user.identifier to sync.",
       user: user,
-      last_sync: DateTime.now
     }, status: 201
   end
 
@@ -86,10 +90,10 @@ class Api::V1::UsersController < Api::V1::ApiController
   end
 
   def phone_params aPhone
-    aPhone.permit(:label, :number)
+    aPhone.permit(:label, :value, :identifier)
   end
 
   def email_params anEmail
-    anEmail.permit(:label, :email)
+    anEmail.permit(:label, :value, :identifier)
   end
 end

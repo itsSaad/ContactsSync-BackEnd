@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
 
-  has_many :contacts
+  has_many :contacts, dependent: :destroy
 
 
   after_create :assert_user_identifier
