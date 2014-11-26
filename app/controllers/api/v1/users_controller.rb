@@ -27,16 +27,20 @@ class Api::V1::UsersController < Api::V1::ApiController
         user.first_name = params[:user][:first_name]
         user.last_name = params[:user][:last_name]
       else
-        user = User.create(first_name: params[:user][:first_name], last_name: params[:user][:last_name])
+        render :json => {
+          message: "Invalid user identifier."
+          }, status: 422
+          return
       end
+    elsif params[:user] && !params[:user][:identifier]
+      user = User.create(first_name: params[:user][:first_name], last_name: params[:user][:last_name])
+    else
+      render :json => {
+        message: "no user specified."
+      }, status: 422
     end
 
-    if !user
-      render :json => {
-        message: "Unknown user identifier."
-      }, status: 422
-      return
-    end
+
     contacts = params[:contacts]
     contacts.each do |aContact|
       phones = aContact[:phones]
@@ -60,7 +64,7 @@ class Api::V1::UsersController < Api::V1::ApiController
       newContact.save
       user.contacts << newContact
     end
-    user.last_sync = DateTime.now
+    user.last_sync = DateTime.now.utc
     user.save
 
     render :json => {
